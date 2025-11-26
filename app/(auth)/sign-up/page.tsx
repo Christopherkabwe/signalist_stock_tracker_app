@@ -20,8 +20,8 @@ const SignUp = () => {
             password: '',
             country: 'US',
             investmentGoals: 'Growth',
-            riskTolerance: 'medium',
-            preferredIndustry: 'technology',
+            riskTolerance: 'Medium',
+            preferredIndustry: 'Technology',
         },
         mode: 'onBlur'
     },);
