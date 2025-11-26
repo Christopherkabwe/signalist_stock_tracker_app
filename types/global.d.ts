@@ -55,11 +55,6 @@ declare global {
         href: string;
     };
 
-    type SearchCommandProps = {
-        renderAs?: 'button' | 'text';
-        label?: string;
-        initialStocks: StockWithWatchlistStatus[];
-    };
 
     type WelcomeEmailData = {
         email: string;
