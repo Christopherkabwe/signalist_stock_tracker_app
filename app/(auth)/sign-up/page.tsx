@@ -73,7 +73,6 @@ const SignUp = () => {
                 />
 
                 <SelectField
-                <SelectField
                     name="investmentGoals"
                     label="Investment Goals"
                     placeholder="Select your investment goals"
@@ -84,7 +83,7 @@ const SignUp = () => {
                 />
 
                 <SelectField
-                    name="risk tolerance"
+                    name="riskTolerance"
                     label="Risk Tolerance"
                     placeholder="Select your risk level"
                     options={RISK_TOLERANCE_OPTIONS}
