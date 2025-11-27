@@ -18,10 +18,16 @@ import { signOut } from "@/lib/actions/authActions";
 const UserDropdown = ({ user }: { user: User }) => {
     const router = useRouter();
 
-    const handleSignOut = async () => {
-        await signOut();
-        router.push("/sign-in");
+import { toast } from "sonner";
+
+const handleSignOut = async () => {
+    const result = await signOut();
+    if (result?.success === false) {
+        toast.error('Sign out failed');
+        return;
     }
+    router.push("/sign-in");
+}
 
     return (
         <DropdownMenu>
