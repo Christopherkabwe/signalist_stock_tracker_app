@@ -27,10 +27,12 @@ export const connectToDatabase = async () => {
 
     try {
         catched.conn = await catched.promise;
-        console.log(`Connected to database in ${process.env.NODE_ENV} environment`);
-        return catched.conn;
     } catch (err) {
         catched.promise = null;
         throw err;
     }
+
+    console.log(`Connected to database ${process.env.NODE_ENV} - ${MONGODB_URI}`);
+
+    return catched.conn;
 }
