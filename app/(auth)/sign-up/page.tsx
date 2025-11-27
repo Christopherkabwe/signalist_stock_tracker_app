@@ -52,7 +52,7 @@ const SignUp = () => {
                     placeholder='Enter your full name'
                     register={register}
                     error={errors.fullName}
-                    validation={{ required: 'Please enter your full name', minLength: { value: 3, message: 'Full name is required' } }}
+                    validation={{ required: 'Please enter your full name', minLength: { value: 3, message: 'Full name must be at least 3 characters' } }}
                 />
                 <InputField
                     name='email'
