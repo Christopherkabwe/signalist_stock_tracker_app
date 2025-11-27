@@ -6,8 +6,12 @@ import SelectField from "@/components/forms/selectField";
 import { INVESTMENT_GOALS, PREFERRED_INDUSTRIES, RISK_TOLERANCE_OPTIONS } from "@/lib/constants";
 import { CountrySelectField } from "@/components/forms/CountrySelectField";
 import FooterLink from "@/components/forms/FooterLink";
+import { signUpWithEmail } from "@/lib/actions/authActions";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner"
 
 const SignUp = () => {
+    const router = useRouter();
     const {
         register,
         handleSubmit,
@@ -28,9 +32,13 @@ const SignUp = () => {
 
     const onSubmit = async (data: SignUpFormData) => {
         try {
-            console.log(data);
-        } catch (e) {
-            console.error(e);
+            const result = await signUpWithEmail(data);
+            if (result.success) router.push('/');
+        } catch (error) {
+            console.error(error);
+            toast.error('Sign up failed', {
+                description: error instanceof Error ? error.message : 'Failed to create an account'
+            })
         }
     }
 
@@ -41,10 +49,10 @@ const SignUp = () => {
                 <InputField
                     name='fullName'
                     label='Full Name'
-                    placeholder='Please enter your full name'
+                    placeholder='Enter your full name'
                     register={register}
                     error={errors.fullName}
-                    validation={{ required: 'Full name is required', minlength: 3 }}
+                    validation={{ required: 'Please enter your full name', minLength: { value: 3, message: 'Full name must be at least 3 characters' } }}
                 />
                 <InputField
                     name='email'
@@ -52,7 +60,13 @@ const SignUp = () => {
                     placeholder='contact@gmail.com'
                     register={register}
                     error={errors.email}
-                    validation={{ required: 'Email is required', pattern: /^\w+@\w+\.\w+$/, message: 'Email address is required' }}
+                    validation={{
+                        required: 'Email is required',
+                        pattern: {
+                            value: /^\w+@\w+\.\w+$/,
+                            message: 'Please enter a valid Email!'
+                        },
+                    }}
                 />
                 <InputField
                     name='password'
@@ -61,7 +75,7 @@ const SignUp = () => {
                     type="password"
                     register={register}
                     error={errors.password}
-                    validation={{ required: 'Password is required', minlength: 8 }}
+                    validation={{ required: 'Password is required', minLength: { value: 8, message: 'Password must be at least 8 characters' } }}
                 />
 
                 <CountrySelectField
