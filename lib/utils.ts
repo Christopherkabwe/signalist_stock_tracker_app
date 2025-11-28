@@ -96,7 +96,7 @@ export const formatArticle = (
   datetime: article.datetime!,
   image: article.image || '',
   category: isCompanyNews ? 'company' : article.category || 'general',
-  related: isCompanyNews ? symbol! : article.related || '',
+  related: isCompanyNews && symbol ? symbol : article.related || '',
 });
 
 export const formatChangePercent = (changePercent?: number) => {

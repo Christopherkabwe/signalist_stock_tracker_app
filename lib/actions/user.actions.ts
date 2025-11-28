@@ -20,7 +20,7 @@ export const getAllUsersForNewsEmail = async () => {
             name: user.name
         }))
     } catch (e) {
-        console.error('Error fething users for news email', e)
+        console.error('Error fetching users for news email', e)
         return []
     }
 }
