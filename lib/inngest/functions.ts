@@ -6,6 +6,8 @@ import { getAllUsersForNewsEmail } from "../actions/user.actions";
 import { getWatchlistSymbolsByEmail } from '../actions/watchlist.actions';
 import { getNews } from '@/lib/actions/finnhub.actions';
 import { formatDateToday } from "@/lib/utils";
+import type { UserForNewsEmail, MarketNewsArticle, User } from '@/types';
+
 
 
 export const sendSignUpEmail = inngest.createFunction(
@@ -114,7 +116,7 @@ export const sendDailyNewsSummary = inngest.createFunction(
             const results = await Promise.allSettled(
                 userNewsSummaries.map(async ({ user, newsContent }) => {
                     if (!newsContent) return false;
-                    return await sendNewsSummaryEmail({ email: user.email, date: formatDateToday(), newsContent })
+                    return await sendNewsSummaryEmail({ email: user.email, date: formatDateToday, newsContent })
                 })
             );
             const failed = results.filter(r => r.status === 'rejected');
