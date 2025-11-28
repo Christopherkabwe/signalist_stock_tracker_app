@@ -1,6 +1,7 @@
 'use server';
 
 import { getDateRange, validateArticle, formatArticle } from '@/lib/utils';
+import type { MarketNewsArticle, RawNewsArticle } from '@/types';
 import { POPULAR_STOCK_SYMBOLS } from '@/lib/constants';
 import { cache } from 'react';
 

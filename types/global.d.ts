@@ -169,6 +169,8 @@ declare global {
         open?: boolean;
         setOpen?: (open: boolean) => void;
         renderAs?: 'button' | 'text';
+        label?: string; // label displayed on the trigger (used by SearchCommand)
+        initialStocks?: StockWithWatchlistStatus[];
         buttonLabel?: string;
         buttonVariant?: 'primary' | 'secondary';
         className?: string;
