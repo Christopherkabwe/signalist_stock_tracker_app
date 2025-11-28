@@ -1,6 +1,5 @@
 import nodemailer from 'nodemailer';
 import { NEWS_SUMMARY_EMAIL_TEMPLATE, WELCOME_EMAIL_TEMPLATE } from '@/lib/nodemailer/templates';
-import { date, email, string } from 'better-auth';
 
 export const transporter = nodemailer.createTransport({
     service: 'gmail',
