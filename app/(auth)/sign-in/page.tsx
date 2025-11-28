@@ -22,12 +22,18 @@ const SignIn = () => {
     const onSubmit = async (data: SignInFormData) => {
         try {
             const result = await signInWithEmail(data);
-            if (result.success) router.push('/');
+            if (result.success) {
+                router.push('/');
+            } else {
+                toast.error('Please enter a valid email & password', {
+                    description: result.error || 'Failed to sign in.'
+                });
+            }
         } catch (error) {
             console.error(error);
-            toast.error('Sign in failed', {
-                description: error instanceof Error ? error.message : 'Failed to sign in.'
-            })
+            toast.error('Please enter a valid email & password', {
+                description: error instanceof Error ? error.message : 'Failed to sign in'
+            });
         }
     }
 
