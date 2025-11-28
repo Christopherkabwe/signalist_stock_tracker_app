@@ -53,7 +53,8 @@ export default function SearchCommand({ renderAs = 'button', label = 'Add stock'
                 const results = await searchStocks('');
                 if (!mounted) return;
                 setStocks(results);
-            } catch (e) {
+            } catch (error) {
+                console.error('Failed to load default stocks:', error);
                 if (!mounted) return;
                 setStocks([]);
             } finally {
@@ -65,7 +66,7 @@ export default function SearchCommand({ renderAs = 'button', label = 'Add stock'
         return () => {
             mounted = false;
         };
-    }, []);
+    }, [initialStocks]);
 
     const debouncedSearch = useDebounce(handleSearch, 300);
 
