@@ -35,6 +35,8 @@ export function formatMarketCapValue(marketCapUsd: number): string {
   return `$${marketCapUsd.toFixed(2)}`; // Below one million, show full USD amount
 }
 
+import type { RawNewsArticle, MarketNewsArticle } from '@/types';
+
 export const getDateRange = (days: number) => {
   const toDate = new Date();
   const fromDate = new Date();
@@ -85,7 +87,7 @@ export const formatArticle = (
   symbol?: string,
   index: number = 0
 ) => ({
-  id: isCompanyNews ? Date.now() + Math.random() : article.id + index,
+  id: isCompanyNews ? Date.now() + Math.random() : (article.id ?? 0) + index,
   headline: article.headline!.trim(),
   summary:
     article.summary!.trim().substring(0, isCompanyNews ? 200 : 150) + '...',
