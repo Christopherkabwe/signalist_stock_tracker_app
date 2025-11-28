@@ -118,13 +118,8 @@ export const formatPrice = (price: number) => {
   }).format(price);
 };
 
-export const formatDateToday = new Date().toLocaleDateString('en-US', {
-  weekday: 'long',
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-  timeZone: 'UTC',
-});
+// NOTE: formatDateToday (a module-level constant) was removed intentionally.
+// Use getFormattedTodayDate() instead so the date is computed at call time.
 
 
 export const getAlertText = (alert: Alert) => {
