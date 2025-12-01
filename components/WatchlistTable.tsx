@@ -1,119 +1,78 @@
-import { WATCHLIST_TABLE_HEADER } from '@/lib/constants'
+'use client';
 
-// Minimal, self-contained table primitives (shadcn-style)
-function Table({ className = '', children, ...props }) {
-  return (
-    <div className="w-full overflow-x-auto">
-      <table className={`w-full caption-bottom text-sm ${className}`} {...props}>
-        {children}
-      </table>
-    </div>
-  )
-}
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { WATCHLIST_TABLE_HEADER } from '@/lib/constants';
+import { Button } from './ui/button';
+import WatchlistButton from './WatchlistButton';
+import { useRouter } from 'next/navigation';
+import { cn, getChangeColorClass } from '@/lib/utils';
 
-function TableHeader({ className = '', children, ...props }) {
-  return (
-    <thead className={`${className}`} {...props}>
-      {children}
-    </thead>
-  )
-}
-
-function TableBody({ className = '', children, ...props }) {
-  return (
-    <tbody className={`${className}`} {...props}>
-      {children}
-    </tbody>
-  )
-}
-
-function TableRow({ className = '', children, ...props }) {
-  return (
-    <tr
-      className={`border-b border-gray-800/60 transition-colors hover:bg-gray-900/40 ${className}`}
-      {...props}
-    >
-      {children}
-    </tr>
-  )
-}
-
-function TableHead({ className = '', children, ...props }) {
-  return (
-    <th
-      className={`h-10 px-4 text-left align-middle font-medium text-gray-400 ${className}`}
-      {...props}
-    >
-      {children}
-    </th>
-  )
-}
-
-function TableCell({ className = '', children, ...props }) {
-  return (
-    <td className={`p-4 align-middle text-left ${className}`} {...props}>
-      {children}
-    </td>
-  )
-}
-
-export default function WatchlistTable() {
-  const rows = [
-    {
-      company: 'Apple Inc.',
-      symbol: 'AAPL',
-      price: '$189.79',
-      change: '+0.56%',
-      marketCap: '$2.97T',
-      pe: '33.42',
-      alert: '—',
-      action: '—',
-    },
-    {
-      company: 'Microsoft Corp.',
-      symbol: 'MSFT',
-      price: '$377.43',
-      change: '+0.21%',
-      marketCap: '$2.86T',
-      pe: '35.18',
-      alert: '—',
-      action: '—',
-    },
-    {
-      company: 'NVIDIA Corp.',
-      symbol: 'NVDA',
-      price: '$489.65',
-      change: '-0.37%',
-      marketCap: '$1.21T',
-      pe: '59.02',
-      alert: '—',
-      action: '—',
-    },
-  ]
+export function WatchlistTable({ watchlist }: WatchlistTableProps) {
+  const router = useRouter();
 
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          {WATCHLIST_TABLE_HEADER.map((col) => (
-            <TableHead key={col}>{col}</TableHead>
-          ))}
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {rows.map((r, idx) => (
-          <TableRow key={idx}>
-            <TableCell>{r.company}</TableCell>
-            <TableCell>{r.symbol}</TableCell>
-            <TableCell>{r.price}</TableCell>
-            <TableCell>{r.change}</TableCell>
-            <TableCell>{r.marketCap}</TableCell>
-            <TableCell>{r.pe}</TableCell>
-            <TableCell>{r.alert}</TableCell>
-            <TableCell>{r.action}</TableCell>
+    <>
+      <Table className='scrollbar-hide-default watchlist-table'>
+        <TableHeader>
+          <TableRow className='table-header-row'>
+            {WATCHLIST_TABLE_HEADER.map((label) => (
+              <TableHead className='table-header' key={label}>
+                {label}
+              </TableHead>
+            ))}
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {watchlist.map((item, index) => (
+            <TableRow
+              key={item.symbol + index}
+              className='table-row'
+              onClick={() =>
+                router.push(`/stocks/${encodeURIComponent(item.symbol)}`)
+              }
+            >
+              <TableCell className='pl-4 table-cell'>{item.company}</TableCell>
+              <TableCell className='table-cell'>{item.symbol}</TableCell>
+              <TableCell className='table-cell'>
+                {item.priceFormatted || '—'}
+              </TableCell>
+              <TableCell
+                className={cn(
+                  'table-cell',
+                  getChangeColorClass(item.changePercent)
+                )}
+              >
+                {item.changeFormatted || '—'}
+              </TableCell>
+              <TableCell className='table-cell'>
+                {item.marketCap || '—'}
+              </TableCell>
+              <TableCell className='table-cell'>
+                {item.peRatio || '—'}
+              </TableCell>
+              <TableCell>
+                <Button className='add-alert'>Add Alert</Button>
+              </TableCell>
+              <TableCell>
+                <WatchlistButton
+                  symbol={item.symbol}
+                  company={item.company}
+                  isInWatchlist={true}
+                  showTrashIcon={true}
+                  type='icon'
+                />
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </>
   )
 }

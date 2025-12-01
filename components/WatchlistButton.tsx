@@ -1,44 +1,91 @@
-"use client";
+'use client';
+import { useDebounce } from '@/hooks/useDebounce';
+import {
+    addToWatchlist,
+    removeFromWatchlist,
+} from '@/lib/actions/watchlist.actions';
+import { Star, StarIcon, Stars, Trash2 } from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+import { toast } from 'sonner';
 
-import React, { useCallback, useState } from 'react';
+// Minimal WatchlistButton implementation to satisfy page requirements.
+// This component focuses on UI contract only. It toggles local state and
+// calls onWatchlistChange if provided. Styling hooks match globals.css.
 
-type Props = {
-    symbol: string;
-    company: string;
-    isInWatchlist: boolean;
-    showTrashIcon?: boolean;
-    type?: 'button' | 'icon';
-    onWatchlistChange?: (symbol: string, isAdded: boolean) => void;
-};
-
-const WatchlistButton = ({ symbol, company, isInWatchlist, showTrashIcon = false, type = 'button', onWatchlistChange }: Props) => {
+const WatchlistButton = ({
+    symbol,
+    company,
+    isInWatchlist,
+    showTrashIcon = false,
+    type = 'button',
+    onWatchlistChange,
+}: WatchlistButtonProps) => {
     const [added, setAdded] = useState<boolean>(!!isInWatchlist);
 
-    const handleClick = useCallback(() => {
-        const next = !added;
-        setAdded(next);
-        try {
-            onWatchlistChange?.(symbol, next);
-        } catch (err) {
-            // keep this component resilient — swallow errors from parent callbacks
-            console.error('WatchlistButton onWatchlistChange callback failed', err);
-        }
-    }, [added, onWatchlistChange, symbol]);
+    const label = useMemo(() => {
+        if (type === 'icon') return added ? '' : '';
+        return added ? 'Remove from Watchlist' : 'Add to Watchlist';
+    }, [added, type]);
 
-    // Simple UI using existing app classes (watchlist-btn / watchlist-remove) so styles from the project apply
+    // Handle adding/removing stocks from watchlist
+    const toggleWatchlist = async () => {
+        const result = added
+            ? await removeFromWatchlist(symbol)
+            : await addToWatchlist(symbol, company);
+
+        if (result.success) {
+            toast.success(added ? 'Removed from Watchlist' : 'Added to Watchlist', {
+                description: `${company} ${added ? 'removed from' : 'added to'
+                    } your watchlist`,
+            });
+
+            // Notify parent component of watchlist change for state synchronization
+            onWatchlistChange?.(symbol, !added);
+        }
+    };
+
+    // Debounce the toggle function to prevent rapid API calls (300ms delay)
+    const debouncedToggle = useDebounce(toggleWatchlist, 300);
+
+    // Click handler that provides optimistic UI updates
+    const handleClick = (e: React.MouseEvent) => {
+        // Prevent event bubbling and default behavior
+        e.stopPropagation();
+        e.preventDefault();
+
+        setAdded(!added);
+        debouncedToggle();
+    };
+
     if (type === 'icon') {
         return (
-            <button aria-pressed={added} title={added ? 'Remove from watchlist' : `Add ${company} to watchlist`} className={`watchlist-icon-btn ${added ? 'watchlist-icon-added' : ''}`} onClick={handleClick}>
-                {added ? '★' : '☆'}
+            <button
+                title={
+                    added
+                        ? `Remove ${symbol} from watchlist`
+                        : `Add ${symbol} to watchlist`
+                }
+                aria-label={
+                    added
+                        ? `Remove ${symbol} from watchlist`
+                        : `Add ${symbol} to watchlist`
+                }
+                className={`watchlist-icon-btn ${added ? 'watchlist-icon-added' : ''}`}
+                onClick={handleClick}
+            >
+                <Star fill={added ? 'currentColor' : 'none'} />
             </button>
         );
     }
 
     return (
-        <div className="w-full">
-            <button className={`watchlist-btn ${added ? 'watchlist-remove' : ''}`} onClick={handleClick}>{added ? 'Remove from watchlist' : 'Add to watchlist'}</button>
-            {showTrashIcon && added ? <div className="mt-2 text-xs text-gray-400">Click again to remove</div> : null}
-        </div>
+        <button
+            className={`watchlist-btn ${added ? 'watchlist-remove' : ''}`}
+            onClick={handleClick}
+        >
+            {showTrashIcon && added ? <Trash2 /> : null}
+            <span>{label}</span>
+        </button>
     );
 };
 
