@@ -123,7 +123,16 @@ export const getWatchlistWithData = async () => {
 
                 if (!stockData) {
                     console.warn(`Failed to fetch data for ${item.symbol}`);
-                    return item;
+                    return {
+                        company: item.company,
+                        symbol: item.symbol,
+                        currentPrice: 0,
+                        priceFormatted: '$0.00',
+                        changeFormatted: '0.00%',
+                        changePercent: 0,
+                        marketCap: '—',
+                        peRatio: '—',
+                    };
                 }
 
                 return {
