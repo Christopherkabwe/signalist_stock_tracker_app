@@ -117,10 +117,6 @@ export const searchStocks = cache(
                 session.user.email
             );
 
-            const userWatchlistSymbols = await getWatchlistSymbolsByEmail(
-                session.user.email
-            );
-
             const token = process.env.FINNHUB_API_KEY ?? NEXT_PUBLIC_FINNHUB_API_KEY;
             if (!token) {
                 // If no token, log and return empty to avoid throwing per requirements
