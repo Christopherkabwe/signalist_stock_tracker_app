@@ -107,11 +107,15 @@ export async function getNews(symbols?: string[]): Promise<MarketNewsArticle[]> 
 
 export const searchStocks = cache(
     async (query?: string): Promise<StockWithWatchlistStatus[]> => {
+        const session = await auth.api.getSession({
+            headers: await headers(),
+        });
+        if (!session?.user) redirect('/sign-in');
+
         try {
-            const session = await auth.api.getSession({
-                headers: await headers(),
-            });
-            if (!session?.user) redirect('/sign-in');
+            const userWatchlistSymbols = await getWatchlistSymbolsByEmail(
+                session.user.email
+            );
 
             const userWatchlistSymbols = await getWatchlistSymbolsByEmail(
                 session.user.email
