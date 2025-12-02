@@ -126,13 +126,13 @@ export default function SearchCommand({
                                             <div className='text-sm text-gray-500'>
                                                 {stock.symbol} | {stock.exchange} | {stock.type}
                                             </div>
+                                            <WatchlistButton
+                                                symbol={stock.symbol}
+                                                company={stock.name}
+                                                isInWatchlist={stock.isInWatchlist}
+                                                onWatchlistChange={handleWatchlistChange}
+                                            />
                                         </div>
-                                        <WatchlistButton
-                                            symbol={stock.symbol}
-                                            company={stock.name}
-                                            isInWatchlist={stock.isInWatchlist}
-                                            onWatchlistChange={handleWatchlistChange}
-                                        />
                                     </Link>
                                 </li>
                             ))}
